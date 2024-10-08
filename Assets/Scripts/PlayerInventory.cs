@@ -112,6 +112,12 @@ public sealed class PlayerInventory : MonoBehaviour
             ItemVisual inventoryItemVisual = new ItemVisual(loadedItem.Details);
 
             AddItemToInventoryGrid(inventoryItemVisual);
+            
+            /*bool inventoryHasSpace = false;
+            StartCoroutine(GetPositionForItem(inventoryItemVisual, result =>
+            {
+                inventoryHasSpace = result;
+            }));*/
 
             bool inventoryHasSpace = await GetPositionForItem(inventoryItemVisual);
 
@@ -125,6 +131,8 @@ public sealed class PlayerInventory : MonoBehaviour
             ConfigureInventoryItem(loadedItem, inventoryItemVisual);
         }
     }
+    
+    
     
     private static void ConfigureInventoryItem(StoredItem item, ItemVisual visual)
     {
@@ -172,6 +180,41 @@ public sealed class PlayerInventory : MonoBehaviour
         return false;
     }
     
+    
+    /*private IEnumerator GetPositionForItem(VisualElement newItem, Action<bool> callback)
+    {
+        bool isPositionFound = false;
+
+        for (int y = 0; y < InventoryDimensions.Height; y++)
+        {
+            for (int x = 0; x < InventoryDimensions.Width; x++)
+            {
+                // Try position
+                SetItemPosition(newItem, new Vector2(SlotDimension.Width * x, SlotDimension.Height * y));
+
+                // Wait for end of frame
+                yield return new WaitForEndOfFrame();
+
+                StoredItem overlappingItem = StoredItems.FirstOrDefault(s =>
+                    s.RootVisual != null && s.RootVisual.layout.Overlaps(newItem.layout));
+
+                // If nothing is here, place the item and return true
+                if (overlappingItem == null)
+                {
+                    isPositionFound = true;
+                    callback(isPositionFound); // Notify callback with success
+                    yield break; // Exit coroutine
+                }
+            }
+        }
+
+        callback(isPositionFound); // Notify callback with failure (false)
+    }*/
+
+
+    
+    
+    
     public (bool canPlace, Vector2 position) ShowPlacementTarget(ItemVisual draggedItem)
     {
         //Check to see if it's hanging over the edge - if so, do not place.
@@ -201,7 +244,5 @@ public sealed class PlayerInventory : MonoBehaviour
         return (canPlace: true, targetSlot.worldBound.position);
 
     }
-    
-    
     
 }
