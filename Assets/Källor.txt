@@ -1,3 +1,9 @@
 https://discussions.unity.com/t/tutorial-create-a-grid-inventory-with-ui-toolkit/856178 - tutorial for inventory
 
 https://github.com/Cysharp/UniTask - plugg in
+
+https://docs.unity3d.com/Manual/UIE-HowTo-CreateEditorWindow.html - Custom editor window
+
+https://docs.unity3d.com/ScriptReference/AssetDatabase.html - AssetDatabase doc
+
+https://discussions.unity.com/t/is-it-possible-to-add-a-sprite-picker-in-a-custom-editor-window/157325 - documentation
