@@ -13,6 +13,11 @@ public class MyCustomEditor : EditorWindow
 {
     [SerializeField] private int m_SelectedIndex = -1;
     private VisualElement m_RightPane;
+    private ItemDefinition lastItem;
+    private string SetName;
+    private string SetDescription;
+    private int SetSellPrice;
+    private Sprite SetSetIcon;
 
     [MenuItem("Window/UI Toolkit/MyCustomEditor")]
     public static void ShowMyEditor()
@@ -97,9 +102,12 @@ public class MyCustomEditor : EditorWindow
     {
         Debug.Log("klick");
     }
+    
+    
 
     private void OnSpriteSelectionChange(IEnumerable<object> selectedItems)
   {
+      
       // Clear all previous content from the pane.
       m_RightPane.Clear();
 
@@ -110,17 +118,41 @@ public class MyCustomEditor : EditorWindow
           var sc = enumerator.Current as ItemDefinition;
           if (sc != null)
           {
+              lastItem = sc;
               // Add a new Image control and display the sprite.
               var name = new TextField();
+              name.RegisterValueChangedCallback(evt =>
+              {
+                  sc.FriendlyName = name.value;
+                  EditorUtility.SetDirty(sc);
+              });
               name.value = sc.FriendlyName;
+              SetName = name.value;
               
               var description = new TextField();
+              description.RegisterValueChangedCallback(evt =>
+              {
+                  sc.Description = description.value;
+                  EditorUtility.SetDirty(sc);
+              });
               description.value = sc.Description;
+              SetDescription = description.value;
               
               var sellprice = new TextField();
+              sellprice.RegisterValueChangedCallback(evt =>
+              {
+                  sc.SellPrice = int.Parse(sellprice.value);
+                  EditorUtility.SetDirty(sc);
+              });
               sellprice.value = sc.SellPrice.ToString();
+              SetSellPrice = int.Parse(sellprice.value);
               
               var icon = new ObjectField();
+              icon.RegisterValueChangedCallback(evt =>
+              {
+                  sc.Icon = icon.value as Sprite;
+                  EditorUtility.SetDirty(sc);
+              });
               icon.objectType = typeof(Sprite);
               icon.value = sc.Icon;
 
@@ -135,7 +167,7 @@ public class MyCustomEditor : EditorWindow
               sc.Description = description.value;
               sc.SellPrice = int.Parse(sellprice.value);
               sc.Icon = icon.value as Sprite;
-              EditorUtility.SetDirty(sc);
+              
           }
           /*
           var selectedSprite = enumerator.Current as Texture2D;

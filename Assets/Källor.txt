@@ -7,3 +7,5 @@ https://docs.unity3d.com/Manual/UIE-HowTo-CreateEditorWindow.html - Custom edito
 https://docs.unity3d.com/ScriptReference/AssetDatabase.html - AssetDatabase doc
 
 https://discussions.unity.com/t/is-it-possible-to-add-a-sprite-picker-in-a-custom-editor-window/157325 - documentation
+
+https://discussions.unity.com/t/how-to-get-notified-when-a-editorguilayout-textfield-changes/816259/2 - lyssnings event
