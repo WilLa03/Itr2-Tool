@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: Plank
+  m_Name: Sword
   m_EditorClassIdentifier: 
-  ID: 967f08c4-d76c-4bc6-b5ac-b6278d27cf63
-  FriendlyName: 
-  Description: 
-  SellPrice: 0
-  Icon: {fileID: 0}
+  ID: b58ab72e-b6ea-4868-a9d1-990b01f11141
+  FriendlyName: Slightly Used Sword
+  Description: A sword that have seen some use
+  SellPrice: 1000
+  Icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   SlotDimension:
-    Height: 0
-    Width: 0
+    Height: 1
+    Width: 1

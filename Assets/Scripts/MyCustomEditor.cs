@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEditor.VersionControl;
@@ -21,7 +22,7 @@ public class MyCustomEditor : EditorWindow
     private string newname;
     private string lastname;
 
-    [MenuItem("Window/UI Toolkit/MyCustomEditor")]
+    [MenuItem("Window/MyCustomEditor")]
     public static void ShowMyEditor()
     {
         // This method is called when the user selects the menu item in the Editor.
@@ -84,13 +85,18 @@ public class MyCustomEditor : EditorWindow
 
       // Initialize the list view with all sprites' names.
       leftPane.makeItem = () => new Label();
-      leftPane.bindItem = (item, index) => { (item as Label).text = allItems[index].name; };
+      leftPane.bindItem = (item, index) =>
+      {
+          (item as Label).text = allItems[index].name;
+          (item as Label).name = allItems[index].name;
+      };
       leftPane.itemsSource = allItems;
 
       Button button = new Button();
       button.name = "create";
       button.text = "Create New Item";
       leftPane.hierarchy.Add(button);
+      
       
       button.clicked += ButtonOnClicked;
       
@@ -126,6 +132,7 @@ public class MyCustomEditor : EditorWindow
         Save.clicked += CreateItem;
         m_RightPane.Add(name);
         m_RightPane.Add(Save);
+        
     }
     
     
@@ -135,6 +142,8 @@ public class MyCustomEditor : EditorWindow
       
       // Clear all previous content from the pane.
       m_RightPane.Clear();
+      
+      
       
       var enumerator = selectedItems.GetEnumerator();
       if (enumerator.MoveNext())
@@ -149,40 +158,58 @@ public class MyCustomEditor : EditorWindow
               
               
               
-              var Aname = new TextField();
+              var Aname = new TextField()
+              {
+                  label = "Name of asset"
+              };
               Aname.RegisterValueChangedCallback(evt =>
               {
                   newAssetName = Aname.value;
               });
               Aname.value = sc.name;
+              Aname.style.alignSelf = Align.Stretch;
               
-              
-              var name = new TextField();
+              var name = new TextField()
+              {
+              };
               name.RegisterValueChangedCallback(evt =>
               {
                   sc.FriendlyName = name.value;
                   EditorUtility.SetDirty(sc);
               });
+              name.label = "Name of item";
               name.value = sc.FriendlyName;
+              name.style.alignSelf = Align.Stretch;
               
-              
-              var description = new TextField();
+              var description = new TextField()
+              {
+                  label = "Description of item"
+              };
               description.RegisterValueChangedCallback(evt =>
               {
                   sc.Description = description.value;
                   EditorUtility.SetDirty(sc);
               });
               description.value = sc.Description;
+              description.style.alignSelf = Align.Stretch;
               
-              var sellprice = new TextField();
+              var sellprice = new TextField()
+              {
+                  label = "Sell price for item"
+              };
               sellprice.RegisterValueChangedCallback(evt =>
               {
                   sc.SellPrice = int.Parse(sellprice.value);
                   EditorUtility.SetDirty(sc);
               });
               sellprice.value = sc.SellPrice.ToString();
+              sellprice.style.alignSelf = Align.Stretch;
+
               
-              var icon = new ObjectField();
+              var icon = new ObjectField()
+              {
+                  label = "Icon for item"
+              };
               icon.RegisterValueChangedCallback(evt =>
               {
                   sc.Icon = icon.value as Sprite;
@@ -190,6 +217,29 @@ public class MyCustomEditor : EditorWindow
               });
               icon.objectType = typeof(Sprite);
               icon.value = sc.Icon;
+              icon.style.alignSelf = Align.Stretch;
+              
+              
+              var Save = new Button();
+              Save.text = "Save";
+              Save.style.marginTop = 50;
+              var Delete = new Button();
+              Delete.text = "Delete Item";
+              Delete.style.maxWidth = 300;
+              Delete.style.minWidth = 150;
+              //Delete.style.height = 100;
+              //Delete.style.top = 10;
+              Delete.style.alignSelf =  Align.FlexEnd;
+              Delete.style.maxHeight = 20;
+              Delete.style.minHeight = 20;
+              
+              //Delete.transform.position = new Vector3(0, 10, 0);
+              
+
+              //Debug.Log(Delete.worldBound.max); 
+              //Delete.worldBound.max.Set(100,10);
+              //Delete.worldBound.min.Set(0,0);
+              
 
               // Add the Image control to the right-hand pane.
               m_RightPane.Add(Aname);
@@ -197,6 +247,9 @@ public class MyCustomEditor : EditorWindow
               m_RightPane.Add(description);
               m_RightPane.Add(sellprice);
               m_RightPane.Add(icon);
+              m_RightPane.Add(Save);
+              m_RightPane.Add(Delete);
+              leftPane.RefreshItems();
               
           }
       }
@@ -204,7 +257,8 @@ public class MyCustomEditor : EditorWindow
 
     private void CreateItem()
     {
-        if (newname != null || newname != lastname)
+        //TODO: Check the name of every SO
+        if (newname != null && newname != lastname)
         {
             ItemDefinition item = ScriptableObject.CreateInstance<ItemDefinition>();
             AssetDatabase.CreateAsset(item, $"Assets/Scripts/SO/{newname}.asset");
@@ -213,22 +267,30 @@ public class MyCustomEditor : EditorWindow
             allItems = FindScriptable();
         
             leftPane.makeItem = () => new Label();
-            leftPane.bindItem = (item, index) => { (item as Label).text = allItems[index].name; };
+            leftPane.bindItem = (item, index) =>
+            {
+                (item as Label).text = allItems[index].name;
+                (item as Label).name = allItems[index].name;
+            };
             leftPane.itemsSource = allItems;
             lastname = newname;
-            /*
-            leftPane.IndexOf(item)
 
-            int Itemindex;
-            foreach (var I in allItems)
+            var children = leftPane.hierarchy.Children();
+            int i = 0;
+            foreach (var I in children)
             {
-                if (I.name == newname)
+                foreach (var child in I.Children())
                 {
-                    Itemindex=I.
+                    i++;
+                    if (child.name == newname)
+                    {
+                        leftPane.SetSelection(i);
+                        leftPane.SetSelection(i-1);
+                        return;
+                    }
                 }
             }
             
-            leftPane.SetSelection();*/
         }
         
     }

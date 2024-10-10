@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: Hammer
+  m_Name: David's Coola Item
   m_EditorClassIdentifier: 
-  ID: b5e2c7c9-8530-463a-9d94-02f0421b8b0d
+  ID: bb1f6616-3ac5-4763-b3eb-986b0e2905d7
   FriendlyName: 
   Description: 
   SellPrice: 0
   Icon: {fileID: 0}
   SlotDimension:
-    Height: 0
-    Width: 0
+    Height: 1
+    Width: 1
