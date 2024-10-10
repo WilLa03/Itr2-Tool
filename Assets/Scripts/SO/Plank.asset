@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: Cube
+  m_Name: Plank
   m_EditorClassIdentifier: 
-  ID: 4fa177ba-c935-4bd5-9022-9a723c822f70
-  FriendlyName: Cubert
-  Description: A square cube
-  SellPrice: 100
-  Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  ID: 967f08c4-d76c-4bc6-b5ac-b6278d27cf63
+  FriendlyName: 
+  Description: 
+  SellPrice: 0
+  Icon: {fileID: 0}
   SlotDimension:
-    Height: 1
-    Width: 2
+    Height: 0
+    Width: 0

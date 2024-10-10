@@ -14,10 +14,12 @@ public class MyCustomEditor : EditorWindow
     [SerializeField] private int m_SelectedIndex = -1;
     private VisualElement m_RightPane;
     private ItemDefinition lastItem;
-    private string SetName;
-    private string SetDescription;
-    private int SetSellPrice;
-    private Sprite SetSetIcon;
+    private string newAssetName;
+    private string[] ItemsGuids;
+    private string path;
+    private ListView leftPane;
+    private string newname;
+    private string lastname;
 
     [MenuItem("Window/UI Toolkit/MyCustomEditor")]
     public static void ShowMyEditor()
@@ -40,17 +42,25 @@ public class MyCustomEditor : EditorWindow
         }
     }*/
 
+    private List<ScriptableObject> FindScriptable()
+    {
+        var allItemsGuids = AssetDatabase.FindAssets("t:ItemDefinition");
+        var allItems = new List<ScriptableObject>();
+      
+        foreach (var guid in allItemsGuids)
+        {
+            allItems.Add(AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)));
+        }
+
+        return allItems;
+    }
+
     public void CreateGUI()
   {
       // Get a list of all sprites in the project.
-      var allItemsGuids = AssetDatabase.FindAssets("t:ItemDefinition");
+      
       var allItems = new List<ScriptableObject>();
-      
-      foreach (var guid in allItemsGuids)
-      {
-          allItems.Add(AssetDatabase.LoadAssetAtPath<ScriptableObject>(AssetDatabase.GUIDToAssetPath(guid)));
-      }
-      
+      allItems = FindScriptable();
       /*
       var allObjectGuids = AssetDatabase.FindAssets("t:Texture2D");
       var allObjects = new List<Texture2D>();
@@ -67,7 +77,7 @@ public class MyCustomEditor : EditorWindow
       rootVisualElement.Add(splitView);
 
       // A TwoPaneSplitView always needs two child elements.
-      var leftPane = new ListView();
+      leftPane = new ListView();
       splitView.Add(leftPane);
       m_RightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
       splitView.Add(m_RightPane);
@@ -82,7 +92,7 @@ public class MyCustomEditor : EditorWindow
       button.text = "Create New Item";
       leftPane.hierarchy.Add(button);
       
-      button.clicked += ButtonOnclicked;
+      button.clicked += ButtonOnClicked;
       
       
       
@@ -98,9 +108,24 @@ public class MyCustomEditor : EditorWindow
       leftPane.selectionChanged += (items) => { m_SelectedIndex = leftPane.selectedIndex; };
   }
 
-    private void ButtonOnclicked()
+    private void ButtonOnClicked()
     {
-        Debug.Log("klick");
+        m_RightPane.Clear();
+
+        var Save = new Button();
+        Save.text = "Save";
+        
+        
+        var name = new TextField();
+        name.RegisterValueChangedCallback(evt =>
+        {
+            newname = name.value;
+        });
+        
+        
+        Save.clicked += CreateItem;
+        m_RightPane.Add(name);
+        m_RightPane.Add(Save);
     }
     
     
@@ -110,7 +135,7 @@ public class MyCustomEditor : EditorWindow
       
       // Clear all previous content from the pane.
       m_RightPane.Clear();
-
+      
       var enumerator = selectedItems.GetEnumerator();
       if (enumerator.MoveNext())
       {
@@ -118,8 +143,20 @@ public class MyCustomEditor : EditorWindow
           var sc = enumerator.Current as ItemDefinition;
           if (sc != null)
           {
-              lastItem = sc;
-              // Add a new Image control and display the sprite.
+              AssetDatabase.RenameAsset(path, newAssetName);
+              ItemsGuids = AssetDatabase.FindAssets(sc.name);
+              path = AssetDatabase.GUIDToAssetPath(ItemsGuids[0]);
+              
+              
+              
+              var Aname = new TextField();
+              Aname.RegisterValueChangedCallback(evt =>
+              {
+                  newAssetName = Aname.value;
+              });
+              Aname.value = sc.name;
+              
+              
               var name = new TextField();
               name.RegisterValueChangedCallback(evt =>
               {
@@ -127,7 +164,7 @@ public class MyCustomEditor : EditorWindow
                   EditorUtility.SetDirty(sc);
               });
               name.value = sc.FriendlyName;
-              SetName = name.value;
+              
               
               var description = new TextField();
               description.RegisterValueChangedCallback(evt =>
@@ -136,7 +173,6 @@ public class MyCustomEditor : EditorWindow
                   EditorUtility.SetDirty(sc);
               });
               description.value = sc.Description;
-              SetDescription = description.value;
               
               var sellprice = new TextField();
               sellprice.RegisterValueChangedCallback(evt =>
@@ -145,7 +181,6 @@ public class MyCustomEditor : EditorWindow
                   EditorUtility.SetDirty(sc);
               });
               sellprice.value = sc.SellPrice.ToString();
-              SetSellPrice = int.Parse(sellprice.value);
               
               var icon = new ObjectField();
               icon.RegisterValueChangedCallback(evt =>
@@ -157,30 +192,44 @@ public class MyCustomEditor : EditorWindow
               icon.value = sc.Icon;
 
               // Add the Image control to the right-hand pane.
+              m_RightPane.Add(Aname);
               m_RightPane.Add(name);
               m_RightPane.Add(description);
               m_RightPane.Add(sellprice);
               m_RightPane.Add(icon);
-
-
-              sc.FriendlyName = name.value;
-              sc.Description = description.value;
-              sc.SellPrice = int.Parse(sellprice.value);
-              sc.Icon = icon.value as Sprite;
               
           }
-          /*
-          var selectedSprite = enumerator.Current as Texture2D;
-          if (selectedSprite != null)
-          {
-              // Add a new Image control and display the sprite.
-              var spriteImage = new Image();
-              spriteImage.scaleMode = ScaleMode.ScaleToFit;
-              spriteImage.image = selectedSprite;
-
-              // Add the Image control to the right-hand pane.
-              m_RightPane.Add(spriteImage);
-          }*/
       }
   }
+
+    private void CreateItem()
+    {
+        if (newname != null || newname != lastname)
+        {
+            ItemDefinition item = ScriptableObject.CreateInstance<ItemDefinition>();
+            AssetDatabase.CreateAsset(item, $"Assets/Scripts/SO/{newname}.asset");
+        
+            var allItems = new List<ScriptableObject>();
+            allItems = FindScriptable();
+        
+            leftPane.makeItem = () => new Label();
+            leftPane.bindItem = (item, index) => { (item as Label).text = allItems[index].name; };
+            leftPane.itemsSource = allItems;
+            lastname = newname;
+            /*
+            leftPane.IndexOf(item)
+
+            int Itemindex;
+            foreach (var I in allItems)
+            {
+                if (I.name == newname)
+                {
+                    Itemindex=I.
+                }
+            }
+            
+            leftPane.SetSelection();*/
+        }
+        
+    }
 }
