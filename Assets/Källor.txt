@@ -9,6 +9,7 @@ https://docs.unity3d.com/ScriptReference/AssetDatabase.html - AssetDatabase doc
 https://discussions.unity.com/t/is-it-possible-to-add-a-sprite-picker-in-a-custom-editor-window/157325 - documentation
 https://docs.unity3d.com/ScriptReference/AssetDatabase.CreateAsset.html
 https://docs.unity3d.com/ScriptReference/AssetDatabase.RenameAsset.html
+https://docs.unity3d.com/ScriptReference/UIElements.Button.html
 
 https://discussions.unity.com/t/proper-way-to-get-changed-values-from-a-textfield/916956/3 - info on hur man reggar changes 
 
