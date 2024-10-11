@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: bb1f6616-3ac5-4763-b3eb-986b0e2905d7
   FriendlyName: 
   Description: 
-  SellPrice: 0
+  SellPrice: 1
   Icon: {fileID: 0}
   SlotDimension:
     Height: 1

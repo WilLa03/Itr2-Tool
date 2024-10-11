@@ -18,7 +18,10 @@ public class ItemDefinition : ScriptableObject
 [Serializable]
 public struct Dimensions
 {
-    [Min(1)]public int Height;
-    [Min(1)]public int Width;
+    
+    [Min(1)]int? height;
+    [Min(1)]int? width;
+    public int Height { get { return height ?? 1; } set { height = value; } }
+    public int Width{ get { return width ?? 1; } set { width = value; } }
 }
 

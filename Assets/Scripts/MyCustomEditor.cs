@@ -19,10 +19,12 @@ public class MyCustomEditor : EditorWindow
     private string[] ItemsGuids;
     private string path;
     private ListView leftPane;
+    private string selectedName;
     private string newname;
     private string lastname;
+    private List<ScriptableObject> allItems;
 
-    [MenuItem("Window/MyCustomEditor")]
+    [MenuItem("Window/ItemManager")]
     public static void ShowMyEditor()
     {
         // This method is called when the user selects the menu item in the Editor.
@@ -33,6 +35,12 @@ public class MyCustomEditor : EditorWindow
         wnd.minSize = new Vector2(450, 200);
         wnd.maxSize = new Vector2(1920, 720);
   }
+
+    private void OnEnable()
+    {
+        //test
+        lastname = null;
+    }
 
 
     /*public void OnGUI()
@@ -60,7 +68,7 @@ public class MyCustomEditor : EditorWindow
   {
       // Get a list of all sprites in the project.
       
-      var allItems = new List<ScriptableObject>();
+      allItems = new List<ScriptableObject>();
       allItems = FindScriptable();
       /*
       var allObjectGuids = AssetDatabase.FindAssets("t:Texture2D");
@@ -84,13 +92,7 @@ public class MyCustomEditor : EditorWindow
       splitView.Add(m_RightPane);
 
       // Initialize the list view with all sprites' names.
-      leftPane.makeItem = () => new Label();
-      leftPane.bindItem = (item, index) =>
-      {
-          (item as Label).text = allItems[index].name;
-          (item as Label).name = allItems[index].name;
-      };
-      leftPane.itemsSource = allItems;
+      MakeUI();
 
       Button button = new Button();
       button.name = "create";
@@ -155,7 +157,7 @@ public class MyCustomEditor : EditorWindow
               AssetDatabase.RenameAsset(path, newAssetName);
               ItemsGuids = AssetDatabase.FindAssets(sc.name);
               path = AssetDatabase.GUIDToAssetPath(ItemsGuids[0]);
-              
+              selectedName = sc.name;
               
               
               var Aname = new TextField()
@@ -168,6 +170,7 @@ public class MyCustomEditor : EditorWindow
               });
               Aname.value = sc.name;
               Aname.style.alignSelf = Align.Stretch;
+              Aname.style.marginTop = 10;
               
               var name = new TextField()
               {
@@ -180,6 +183,7 @@ public class MyCustomEditor : EditorWindow
               name.label = "Name of item";
               name.value = sc.FriendlyName;
               name.style.alignSelf = Align.Stretch;
+              name.style.marginTop = 10;
               
               var description = new TextField()
               {
@@ -191,18 +195,19 @@ public class MyCustomEditor : EditorWindow
                   EditorUtility.SetDirty(sc);
               });
               description.value = sc.Description;
+              description.multiline = true;
               description.style.alignSelf = Align.Stretch;
               
-              var sellprice = new TextField()
+              var sellprice = new IntegerField()
               {
                   label = "Sell price for item"
               };
               sellprice.RegisterValueChangedCallback(evt =>
               {
-                  sc.SellPrice = int.Parse(sellprice.value);
+                  sc.SellPrice = sellprice.value;
                   EditorUtility.SetDirty(sc);
               });
-              sellprice.value = sc.SellPrice.ToString();
+              sellprice.value = sc.SellPrice;
               sellprice.style.alignSelf = Align.Stretch;
 
               
@@ -219,60 +224,100 @@ public class MyCustomEditor : EditorWindow
               icon.value = sc.Icon;
               icon.style.alignSelf = Align.Stretch;
               
+              var dimensions = new Vector2IntField()
+              {
+                  label = "Dimensions for item"
+              };
+              dimensions.RegisterValueChangedCallback(evt =>
+              {
+                  if (dimensions.value.x < 1)
+                  {
+                      dimensions.value = new Vector2Int(1,dimensions.value.y);
+                  }
+                  else if (dimensions.value.y < 1)
+                  {
+                      dimensions.value = new Vector2Int(dimensions.value.x,1);
+                  }
+                  else
+                  {
+                      //TODO: Check this, maybe change SlotDimension to vector2 
+                      sc.SlotDimension.Height = dimensions.value.y;
+                      sc.SlotDimension.Width = dimensions.value.x;
+                      EditorUtility.SetDirty(sc);
+                  }
+                  
+              });
+              dimensions.value = new Vector2Int(sc.SlotDimension.Width, sc.SlotDimension.Height);
+              dimensions.style.alignSelf = Align.Stretch;
+              
               
               var Save = new Button();
               Save.text = "Save";
-              Save.style.marginTop = 50;
+              Save.style.marginTop = 30;
+              Save.style.alignSelf =  Align.Center;
+              Save.style.maxWidth = 400;
+              Save.style.minWidth = 300;
+              Save.style.maxHeight = 20;
+              Save.style.minHeight = 20;
+              Save.style.flexGrow = 1;
+              
               var Delete = new Button();
               Delete.text = "Delete Item";
-              Delete.style.maxWidth = 300;
-              Delete.style.minWidth = 150;
-              //Delete.style.height = 100;
-              //Delete.style.top = 10;
-              Delete.style.alignSelf =  Align.FlexEnd;
+              Delete.style.marginTop = 10;
+              Delete.style.maxWidth = 400;
+              Delete.style.minWidth = 300;
+              Delete.style.alignSelf =  Align.Center;
               Delete.style.maxHeight = 20;
               Delete.style.minHeight = 20;
+              Delete.style.flexGrow = 1;
               
-              //Delete.transform.position = new Vector3(0, 10, 0);
               
-
-              //Debug.Log(Delete.worldBound.max); 
-              //Delete.worldBound.max.Set(100,10);
-              //Delete.worldBound.min.Set(0,0);
-              
-
-              // Add the Image control to the right-hand pane.
               m_RightPane.Add(Aname);
               m_RightPane.Add(name);
               m_RightPane.Add(description);
               m_RightPane.Add(sellprice);
+              m_RightPane.Add(dimensions);
               m_RightPane.Add(icon);
               m_RightPane.Add(Save);
               m_RightPane.Add(Delete);
+
+              Save.clicked += SaveItem;
+              Delete.clicked += DeleteItem;
               leftPane.RefreshItems();
               
           }
       }
   }
 
+    //TODO: Fix this button
+    private void SaveItem()
+    {
+        MakeUI();
+    }
+    private void DeleteItem()
+    {
+        if (selectedName!= null)
+        {
+            //Debug.Log($"Tar bort {selectedName}");
+            AssetDatabase.DeleteAsset($"Assets/Scripts/SO/{selectedName}.asset");
+            //Debug.Log($"Assets/Scripts/SO/{selectedName}.asset");
+        }
+        MakeUI();
+     
+        
+        //SaveItem();
+        leftPane.SetSelection(-1);
+    }
+
     private void CreateItem()
     {
         //TODO: Check the name of every SO
+        //TODO: Fix visualization 
         if (newname != null && newname != lastname)
         {
             ItemDefinition item = ScriptableObject.CreateInstance<ItemDefinition>();
             AssetDatabase.CreateAsset(item, $"Assets/Scripts/SO/{newname}.asset");
-        
-            var allItems = new List<ScriptableObject>();
-            allItems = FindScriptable();
-        
-            leftPane.makeItem = () => new Label();
-            leftPane.bindItem = (item, index) =>
-            {
-                (item as Label).text = allItems[index].name;
-                (item as Label).name = allItems[index].name;
-            };
-            leftPane.itemsSource = allItems;
+            MakeUI();
             lastname = newname;
 
             var children = leftPane.hierarchy.Children();
@@ -290,8 +335,20 @@ public class MyCustomEditor : EditorWindow
                     }
                 }
             }
-            
         }
-        
+    }
+
+    private void MakeUI()
+    {
+        allItems = new List<ScriptableObject>();
+        allItems = FindScriptable();
+        leftPane.Clear();
+        leftPane.makeItem = () => new Label();
+        leftPane.bindItem = (item, index) =>
+        {
+            (item as Label).text = allItems[index].name;
+            (item as Label).name = allItems[index].name;
+        };
+        leftPane.itemsSource = allItems;
     }
 }
