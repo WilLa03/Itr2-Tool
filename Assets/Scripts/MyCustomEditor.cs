@@ -93,6 +93,8 @@ public class MyCustomEditor : EditorWindow
       
       button.clicked += ButtonOnClicked;
 
+      
+      //TODO: Make it so that it doesnt break on hotload
       SortDrop.style.alignSelf = Align.FlexStart;
       SortDrop.RegisterCallback<ChangeEvent<Enum>>(evt =>
       {
