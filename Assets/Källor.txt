@@ -13,3 +13,5 @@ https://docs.unity3d.com/ScriptReference/UIElements.Button.html
 
 https://discussions.unity.com/t/proper-way-to-get-changed-values-from-a-textfield/916956/3 - info on hur man reggar changes 
 
+https://unity.com/blog/engine-platform/ui-toolkit-at-runtime-get-the-breakdown - General UI toolkit info
+

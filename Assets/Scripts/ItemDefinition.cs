@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 public class ItemDefinition : ScriptableObject
 {
     public string ID = Guid.NewGuid().ToString();
+    [HideInInspector]public string AssetName;
     public Rarity Rarity;
     public string FriendlyName;
     public string Description;

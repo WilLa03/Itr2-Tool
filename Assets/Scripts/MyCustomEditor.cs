@@ -290,6 +290,7 @@ public class MyCustomEditor : EditorWindow
     //TODO: Fix this button
     private void SaveItem()
     {
+        Debug.Log("Save");
         MakeUI();
     }
     private void DeleteItem()

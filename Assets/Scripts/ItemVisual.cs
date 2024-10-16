@@ -7,13 +7,15 @@ public class ItemVisual : VisualElement
     
     
     private readonly ItemDefinition m_Item;
+    private readonly string m_ID;
     private Vector2 m_OriginalPosition;
     private bool m_IsDragging;
     
     private (bool canPlace, Vector2 position) m_PlacementResults;
-    public ItemVisual(ItemDefinition item)
+    public ItemVisual(ItemDefinition item, string id)
     {
         m_Item = item;
+        m_ID = id;
 
         VisualElement icon = new VisualElement
         {
@@ -54,7 +56,7 @@ public class ItemVisual : VisualElement
     
     private void OnMouseUpEvent(MouseUpEvent mouseEvent)
     {
-        PlayerInventory.UpdateItemDetails(m_Item);
+        PlayerInventory.UpdateItemDetails(m_Item, m_ID);
         if (!m_IsDragging)
         {
             StartDrag();

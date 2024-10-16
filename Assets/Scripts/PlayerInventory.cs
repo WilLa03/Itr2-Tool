@@ -12,6 +12,7 @@ using UnityEngine.UIElements;
 [Serializable]
 public class StoredItem
 {
+    [HideInInspector]public string ID = Guid.NewGuid().ToString();
     public ItemDefinition Details;
     public ItemVisual RootVisual;
 }
@@ -32,6 +33,10 @@ public sealed class PlayerInventory : MonoBehaviour
     private static Label m_ItemDetailPrice;
     
     private VisualElement m_Telegraph;
+    private Button m_ButtonDrop;
+    private Button m_ButtonEquip;
+
+    private static string currentItemID;
     
     public static Dimensions SlotDimension { get; private set; }
 
@@ -53,17 +58,27 @@ public sealed class PlayerInventory : MonoBehaviour
         
     }
 
+    private void OnDestroy()
+    {
+        m_ButtonDrop.clickable.clicked -= OnDropClicked;
+        m_ButtonEquip.clickable.clicked -= OnEquipClicked;
+    }
+
     private async void Configure()
     {
         m_Root = GetComponentInChildren<UIDocument>().rootVisualElement;
         
         m_InventoryGrid = m_Root.Q<VisualElement>("Grid");
-
+        
         VisualElement itemDetails = m_Root.Q<VisualElement>("ItemDetails");
 
         m_ItemDetailHeader = itemDetails.Q<Label>("ItemName");
         m_ItemDetailBody = itemDetails.Q<Label>("Description");
         m_ItemDetailPrice = itemDetails.Q<Label>("SellPrice");
+        m_ButtonDrop = itemDetails.Q<Button>("btn_Drop");
+        m_ButtonDrop.clickable.clicked += OnDropClicked;
+        m_ButtonEquip = itemDetails.Q<Button>("btn_Equip");
+        m_ButtonEquip.clickable.clicked += OnEquipClicked;
         ConfigureInventoryTelegraph();
 
         await UniTask.WaitForEndOfFrame();
@@ -109,18 +124,13 @@ public sealed class PlayerInventory : MonoBehaviour
         //load
         foreach (StoredItem loadedItem in StoredItems)
         {
-            ItemVisual inventoryItemVisual = new ItemVisual(loadedItem.Details);
+            loadedItem.ID = Guid.NewGuid().ToString();
+            ItemVisual inventoryItemVisual = new ItemVisual(loadedItem.Details, loadedItem.ID);
 
             AddItemToInventoryGrid(inventoryItemVisual);
             
-            /*bool inventoryHasSpace = false;
-            StartCoroutine(GetPositionForItem(inventoryItemVisual, result =>
-            {
-                inventoryHasSpace = result;
-            }));*/
 
             bool inventoryHasSpace = await GetPositionForItem(inventoryItemVisual);
-
             if (!inventoryHasSpace)
             {
                 Debug.Log("No space - Cannot pick up the item");
@@ -140,8 +150,10 @@ public sealed class PlayerInventory : MonoBehaviour
         visual.style.visibility = Visibility.Visible;
     }
     
-    public static void UpdateItemDetails(ItemDefinition item)
+    public static void UpdateItemDetails(ItemDefinition item, string ID)
     {
+        
+        currentItemID = ID;
         m_ItemDetailHeader.text = item.FriendlyName;
         m_ItemDetailBody.text = item.Description;
         m_ItemDetailPrice.text = item.SellPrice.ToString();
@@ -180,36 +192,6 @@ public sealed class PlayerInventory : MonoBehaviour
         return false;
     }
     
-    
-    /*private IEnumerator GetPositionForItem(VisualElement newItem, Action<bool> callback)
-    {
-        bool isPositionFound = false;
-
-        for (int y = 0; y < InventoryDimensions.Height; y++)
-        {
-            for (int x = 0; x < InventoryDimensions.Width; x++)
-            {
-                // Try position
-                SetItemPosition(newItem, new Vector2(SlotDimension.Width * x, SlotDimension.Height * y));
-
-                // Wait for end of frame
-                yield return new WaitForEndOfFrame();
-
-                StoredItem overlappingItem = StoredItems.FirstOrDefault(s =>
-                    s.RootVisual != null && s.RootVisual.layout.Overlaps(newItem.layout));
-
-                // If nothing is here, place the item and return true
-                if (overlappingItem == null)
-                {
-                    isPositionFound = true;
-                    callback(isPositionFound); // Notify callback with success
-                    yield break; // Exit coroutine
-                }
-            }
-        }
-
-        callback(isPositionFound); // Notify callback with failure (false)
-    }*/
 
 
     
@@ -243,6 +225,22 @@ public sealed class PlayerInventory : MonoBehaviour
 
         return (canPlace: true, targetSlot.worldBound.position);
 
+    }
+    
+    private void OnDropClicked()
+    {
+        foreach (var Item in StoredItems)
+        {
+            if (currentItemID == Item.ID)
+            {
+                RemoveItemFromInventoryGrid(Item.RootVisual);
+            }
+        }
+    }
+
+    private void OnEquipClicked()
+    {
+        Debug.Log($"equip is not implemented right now");
     }
     
 }
