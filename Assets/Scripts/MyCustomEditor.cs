@@ -158,12 +158,9 @@ public class MyCustomEditor : EditorWindow
               ItemsGuids = AssetDatabase.FindAssets(sc.name);
               path = AssetDatabase.GUIDToAssetPath(ItemsGuids[0]);
               selectedName = sc.name;
-              
-              
-              var Aname = new TextField()
-              {
-                  label = "Name of asset"
-              };
+
+
+              var Aname = new TextField("Name of asset");
               Aname.RegisterValueChangedCallback(evt =>
               {
                   newAssetName = Aname.value;
@@ -172,7 +169,7 @@ public class MyCustomEditor : EditorWindow
               Aname.style.alignSelf = Align.Stretch;
               Aname.style.marginTop = 10;
               
-              var name = new TextField()
+              var name = new TextField("Name of item")
               {
               };
               name.RegisterValueChangedCallback(evt =>
@@ -180,15 +177,22 @@ public class MyCustomEditor : EditorWindow
                   sc.FriendlyName = name.value;
                   EditorUtility.SetDirty(sc);
               });
-              name.label = "Name of item";
               name.value = sc.FriendlyName;
               name.style.alignSelf = Align.Stretch;
               name.style.marginTop = 10;
+
+              var rarity = new EnumField("Rarity of item",sc.Rarity);
               
-              var description = new TextField()
+              rarity.RegisterCallback<ChangeEvent<Enum>>(evt =>
               {
-                  label = "Description of item"
-              };
+                  sc.Rarity = (Rarity)Enum.Parse(typeof(Rarity), evt.newValue.ToString());
+                  EditorUtility.SetDirty(sc);
+              });
+              
+              rarity.style.alignSelf = Align.Stretch;
+
+
+              var description = new TextField("Description of item");
               description.RegisterValueChangedCallback(evt =>
               {
                   sc.Description = description.value;
@@ -198,10 +202,7 @@ public class MyCustomEditor : EditorWindow
               description.multiline = true;
               description.style.alignSelf = Align.Stretch;
               
-              var sellprice = new IntegerField()
-              {
-                  label = "Sell price for item"
-              };
+              var sellprice = new IntegerField("Sell price for item");
               sellprice.RegisterValueChangedCallback(evt =>
               {
                   sc.SellPrice = sellprice.value;
@@ -211,10 +212,7 @@ public class MyCustomEditor : EditorWindow
               sellprice.style.alignSelf = Align.Stretch;
 
               
-              var icon = new ObjectField()
-              {
-                  label = "Icon for item"
-              };
+              var icon = new ObjectField("Icon for item");
               icon.RegisterValueChangedCallback(evt =>
               {
                   sc.Icon = icon.value as Sprite;
@@ -224,10 +222,7 @@ public class MyCustomEditor : EditorWindow
               icon.value = sc.Icon;
               icon.style.alignSelf = Align.Stretch;
               
-              var dimensions = new Vector2IntField()
-              {
-                  label = "Dimensions for item"
-              };
+              var dimensions = new Vector2IntField("Dimensions for item");
               dimensions.RegisterValueChangedCallback(evt =>
               {
                   if (dimensions.value.x < 1)
@@ -240,14 +235,13 @@ public class MyCustomEditor : EditorWindow
                   }
                   else
                   {
-                      //TODO: Check this, maybe change SlotDimension to vector2 
-                      sc.SlotDimension.Height = dimensions.value.y;
-                      sc.SlotDimension.Width = dimensions.value.x;
+                      sc.SlotDimension.x = dimensions.value.x;
+                      sc.SlotDimension.y = dimensions.value.y;
                       EditorUtility.SetDirty(sc);
                   }
                   
               });
-              dimensions.value = new Vector2Int(sc.SlotDimension.Width, sc.SlotDimension.Height);
+              dimensions.value = new Vector2Int(sc.SlotDimension.x, sc.SlotDimension.y);
               dimensions.style.alignSelf = Align.Stretch;
               
               
@@ -274,6 +268,7 @@ public class MyCustomEditor : EditorWindow
               
               m_RightPane.Add(Aname);
               m_RightPane.Add(name);
+              m_RightPane.Add(rarity);
               m_RightPane.Add(description);
               m_RightPane.Add(sellprice);
               m_RightPane.Add(dimensions);

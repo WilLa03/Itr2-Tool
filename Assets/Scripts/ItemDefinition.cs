@@ -8,20 +8,29 @@ using Object = UnityEngine.Object;
 public class ItemDefinition : ScriptableObject
 {
     public string ID = Guid.NewGuid().ToString();
+    public Rarity Rarity;
     public string FriendlyName;
     public string Description;
     public int SellPrice;
+    public Vector2Int SlotDimension;
     public Sprite Icon;
-    public Dimensions SlotDimension;
+    
 }
 
 [Serializable]
 public struct Dimensions
 {
-    
     [Min(1)]int? height;
     [Min(1)]int? width;
     public int Height { get { return height ?? 1; } set { height = value; } }
     public int Width{ get { return width ?? 1; } set { width = value; } }
+}
+public enum Rarity
+{
+    Common,
+    Uncommon, 
+    Rare,
+    VeryRare,
+    Mythic
 }
 
