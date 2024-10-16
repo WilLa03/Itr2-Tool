@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -18,18 +19,21 @@ public class MyCustomEditor : EditorWindow
     private string newAssetName;
     private string[] ItemsGuids;
     private string path;
-    private ListView leftPane;
+    private VisualElement leftPane;
+    private EnumField SortDrop;
+    private ListView leftList;
     private string selectedName;
     private string newname;
     private string lastname;
-    private List<ScriptableObject> allItems;
+    private List<ItemDefinition> allItems;
+    private Sorting sortingtype = Sorting.Alphabet;
 
     [MenuItem("Window/ItemManager")]
     public static void ShowMyEditor()
     {
         // This method is called when the user selects the menu item in the Editor.
         EditorWindow wnd = GetWindow<MyCustomEditor>();
-        wnd.titleContent = new GUIContent("My Custom Editor");
+        wnd.titleContent = new GUIContent("Item Manager");
 
         // Limit size of the window.
         wnd.minSize = new Vector2(450, 200);
@@ -38,18 +42,10 @@ public class MyCustomEditor : EditorWindow
 
     private void OnEnable()
     {
-        //test
         lastname = null;
     }
 
-
-    /*public void OnGUI()
-    {
-        if (GUILayout.Button("Add"))
-        {
-            Debug.Log("Was Pressed");
-        }
-    }*/
+    
 
     private List<ScriptableObject> FindScriptable()
     {
@@ -65,18 +61,8 @@ public class MyCustomEditor : EditorWindow
     }
 
     public void CreateGUI()
-  {
+    {
       // Get a list of all sprites in the project.
-      
-      allItems = new List<ScriptableObject>();
-      allItems = FindScriptable();
-      /*
-      var allObjectGuids = AssetDatabase.FindAssets("t:Texture2D");
-      var allObjects = new List<Texture2D>();
-      foreach (var guid in allObjectGuids)
-      {
-        allObjects.Add(AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guid)));
-      }*/
 
       // Create a two-pane view with the left pane being fixed.
       var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
@@ -86,7 +72,12 @@ public class MyCustomEditor : EditorWindow
       rootVisualElement.Add(splitView);
 
       // A TwoPaneSplitView always needs two child elements.
-      leftPane = new ListView();
+      leftPane = new VisualElement();
+      
+      leftList = new ListView();
+      SortDrop = new EnumField(Sorting.Alphabet);
+      leftPane.Add(SortDrop);
+      leftPane.Add(leftList);
       splitView.Add(leftPane);
       m_RightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
       splitView.Add(m_RightPane);
@@ -97,23 +88,30 @@ public class MyCustomEditor : EditorWindow
       Button button = new Button();
       button.name = "create";
       button.text = "Create New Item";
-      leftPane.hierarchy.Add(button);
+      leftList.hierarchy.Add(button);
       
       
       button.clicked += ButtonOnClicked;
-      
-      
+
+      SortDrop.style.alignSelf = Align.FlexStart;
+      SortDrop.RegisterCallback<ChangeEvent<Enum>>(evt =>
+      {
+          sortingtype = (Sorting)Enum.Parse(typeof(Sorting), evt.newValue.ToString());
+          MakeUI();
+      });
       
 
       // React to the user's selection.
-      leftPane.selectionChanged += OnSpriteSelectionChange;
+      leftList.selectionChanged += OnItemSelectionChange;
       
 
+      
+      
       // Restore the selection index from before the hot reload.
-      leftPane.selectedIndex = m_SelectedIndex;
+      leftList.selectedIndex = m_SelectedIndex;
 
       // Store the selection index when the selection changes.
-      leftPane.selectionChanged += (items) => { m_SelectedIndex = leftPane.selectedIndex; };
+      leftList.selectionChanged += (items) => { m_SelectedIndex = leftList.selectedIndex; };
   }
 
     private void ButtonOnClicked()
@@ -134,12 +132,15 @@ public class MyCustomEditor : EditorWindow
         Save.clicked += CreateItem;
         m_RightPane.Add(name);
         m_RightPane.Add(Save);
+
+
+        
         
     }
     
     
 
-    private void OnSpriteSelectionChange(IEnumerable<object> selectedItems)
+    private void OnItemSelectionChange(IEnumerable<object> selectedItems)
   {
       
       // Clear all previous content from the pane.
@@ -278,7 +279,7 @@ public class MyCustomEditor : EditorWindow
 
               Save.clicked += SaveItem;
               Delete.clicked += DeleteItem;
-              leftPane.RefreshItems();
+              leftList.RefreshItems();
               
           }
       }
@@ -301,7 +302,7 @@ public class MyCustomEditor : EditorWindow
      
         
         //SaveItem();
-        leftPane.SetSelection(-1);
+        leftList.SetSelection(-1);
     }
 
     private void CreateItem()
@@ -315,7 +316,7 @@ public class MyCustomEditor : EditorWindow
             MakeUI();
             lastname = newname;
 
-            var children = leftPane.hierarchy.Children();
+            var children = leftList.hierarchy.Children();
             int i = 0;
             foreach (var I in children)
             {
@@ -324,8 +325,8 @@ public class MyCustomEditor : EditorWindow
                     i++;
                     if (child.name == newname)
                     {
-                        leftPane.SetSelection(i);
-                        leftPane.SetSelection(i-1);
+                        leftList.SetSelection(i);
+                        leftList.SetSelection(i-1);
                         return;
                     }
                 }
@@ -335,15 +336,82 @@ public class MyCustomEditor : EditorWindow
 
     private void MakeUI()
     {
-        allItems = new List<ScriptableObject>();
-        allItems = FindScriptable();
-        leftPane.Clear();
-        leftPane.makeItem = () => new Label();
-        leftPane.bindItem = (item, index) =>
+        allItems = new List<ItemDefinition>();
+        var allScriptable = FindScriptable();
+        foreach (var scriptable in allScriptable)
+        {
+            if (scriptable is ItemDefinition itemDefinition)
+            {
+                allItems.Add(itemDefinition);
+            }
+        }
+        leftList.Clear();
+        Sort(allItems);
+        leftList.makeItem = () => new Label();
+        leftList.bindItem = (item, index) =>
         {
             (item as Label).text = allItems[index].name;
             (item as Label).name = allItems[index].name;
         };
-        leftPane.itemsSource = allItems;
+        leftList.itemsSource = allItems;
     }
+
+    private List<ItemDefinition> Sort(List<ItemDefinition> list)
+    {
+        if (sortingtype == Sorting.AlphabetReverse)
+        {
+            list.Reverse();
+            return list;
+        }
+        if (sortingtype == Sorting.Rarity || sortingtype == Sorting.RarityReverse)
+        {
+            for (int i = 0; i < list.Count - i; i++)
+            {
+                for (int j = 0; j < list.Count - i - 1; j++)
+                {
+                    if (list[j].Rarity > list[j + 1].Rarity)
+                    {
+
+                        (list[j + 1], list[j]) =
+                            (list[j], list[j + 1]);
+                    }
+                }
+            }
+
+            if (sortingtype == Sorting.Rarity) return list;
+            list.Reverse();
+            return list;
+        }
+        
+        if (sortingtype == Sorting.Cost)
+        {
+            for (int i = 0; i < list.Count - i; i++)
+            {
+                for (int j = 0; j < list.Count - i - 1; j++)
+                {
+                    if (list[j].SellPrice > list[j + 1].SellPrice)
+                    {
+
+                        (list[j + 1], list[j]) =
+                            (list[j], list[j + 1]);
+                    }
+                }
+            }
+            if (sortingtype == Sorting.CostReverse) return list;
+            list.Reverse();
+            return list;
+        }
+        return list;
+    }
+}
+
+
+public enum Sorting
+{
+    [InspectorName("Alphabet↓")]Alphabet,
+    [InspectorName("Alphabet↑")]AlphabetReverse, 
+    [InspectorName("Rarity↓")]Rarity,
+    [InspectorName("Rarity↑")]RarityReverse,
+    [InspectorName("Cost↓")]Cost,
+    [InspectorName("Cost↑")]CostReverse
 }

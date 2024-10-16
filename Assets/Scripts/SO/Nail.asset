@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Nail
   m_EditorClassIdentifier: 
   ID: b416f7ab-9fda-4d57-9ce1-ee80da286c7b
+  Rarity: 0
   FriendlyName: Nail
   Description: A normal looking nail
   SellPrice: 1
+  SlotDimension: {x: 0, y: 0}
   Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  SlotDimension:
-    Height: 1
-    Width: 1

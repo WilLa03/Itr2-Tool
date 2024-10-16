@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   ID: b58ab72e-b6ea-4868-a9d1-990b01f11141
+  Rarity: 2
   FriendlyName: Slightly Used Sword
   Description: A sword that have seen some use
   SellPrice: 1000
+  SlotDimension: {x: 0, y: 0}
   Icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  SlotDimension:
-    Height: 1
-    Width: 1

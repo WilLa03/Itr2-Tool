@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: David's Coola Item
   m_EditorClassIdentifier: 
   ID: bb1f6616-3ac5-4763-b3eb-986b0e2905d7
+  Rarity: 4
   FriendlyName: 
   Description: 
   SellPrice: 1
+  SlotDimension: {x: 0, y: 0}
   Icon: {fileID: 0}
-  SlotDimension:
-    Height: 1
-    Width: 1
