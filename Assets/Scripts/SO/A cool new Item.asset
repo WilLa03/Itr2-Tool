@@ -18,5 +18,5 @@ MonoBehaviour:
     grandfather Mike
   Description: its an item, just an item
   SellPrice: 1
-  SlotDimension: {x: 0, y: 0}
+  SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 21300000, guid: 52b9900dc7f1bef4c861c91c3b71139b, type: 3}

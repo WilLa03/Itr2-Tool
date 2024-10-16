@@ -17,5 +17,5 @@ MonoBehaviour:
   FriendlyName: Nail
   Description: A normal looking nail
   SellPrice: 1
-  SlotDimension: {x: 0, y: 0}
+  SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}

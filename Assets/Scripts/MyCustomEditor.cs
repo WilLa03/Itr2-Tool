@@ -365,7 +365,7 @@ public class MyCustomEditor : EditorWindow
             list.Reverse();
             return list;
         }
-        if (sortingtype == Sorting.Rarity || sortingtype == Sorting.RarityReverse)
+        if (sortingtype is Sorting.Rarity or Sorting.RarityReverse)
         {
             for (int i = 0; i < list.Count - i; i++)
             {
@@ -385,7 +385,7 @@ public class MyCustomEditor : EditorWindow
             return list;
         }
         
-        if (sortingtype == Sorting.Cost)
+        if (sortingtype is Sorting.Cost or Sorting.CostReverse)
         {
             for (int i = 0; i < list.Count - i; i++)
             {
@@ -403,6 +403,26 @@ public class MyCustomEditor : EditorWindow
             list.Reverse();
             return list;
         }
+
+        if (sortingtype is Sorting.Area or Sorting.AreaReverse)
+        {
+            for (int i = 0; i < list.Count - i; i++)
+            {
+                for (int j = 0; j < list.Count - i - 1; j++)
+                {
+                    if (list[j].SlotDimension.x*list[j].SlotDimension.y > list[j + 1].SlotDimension.x*list[j + 1].SlotDimension.y)
+                    {
+
+                        (list[j + 1], list[j]) =
+                            (list[j], list[j + 1]);
+                    }
+                }
+            }
+
+            if (sortingtype == Sorting.Area) return list;
+            list.Reverse();
+            return list;
+        }
         return list;
     }
 }
@@ -415,5 +435,7 @@ public enum Sorting
     [InspectorName("Rarity↓")]Rarity,
     [InspectorName("Rarity↑")]RarityReverse,
     [InspectorName("Cost↓")]Cost,
-    [InspectorName("Cost↑")]CostReverse
+    [InspectorName("Cost↑")]CostReverse,
+    [InspectorName("Area↓")]Area,
+    [InspectorName("Area↑")]AreaReverse
 }

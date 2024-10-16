@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: Cube
+  m_Name: Amandas Cool Item
   m_EditorClassIdentifier: 
-  ID: 4fa177ba-c935-4bd5-9022-9a723c822f70
+  ID: 714c5266-a3cb-444c-b1db-fefd89ba0dd1
   Rarity: 3
-  FriendlyName: Cubert
-  Description: A square cube
-  SellPrice: 100
-  SlotDimension: {x: 1, y: 1}
-  Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  FriendlyName: Amandas Item
+  Description: A very cool item
+  SellPrice: 50
+  SlotDimension: {x: 3, y: 2}
+  Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}

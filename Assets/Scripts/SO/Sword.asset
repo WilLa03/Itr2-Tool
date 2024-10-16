@@ -17,5 +17,5 @@ MonoBehaviour:
   FriendlyName: Slightly Used Sword
   Description: A sword that have seen some use
   SellPrice: 1000
-  SlotDimension: {x: 0, y: 0}
+  SlotDimension: {x: 1, y: 2}
   Icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}

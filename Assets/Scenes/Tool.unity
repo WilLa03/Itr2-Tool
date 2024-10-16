@@ -247,8 +247,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StoredItems:
-  - Details: {fileID: 11400000, guid: 759d6f883d268074f846a74808f60365, type: 2}
-  - Details: {fileID: 11400000, guid: 759d6f883d268074f846a74808f60365, type: 2}
+  - Details: {fileID: 11400000, guid: 615219157bd293d43849f13382a111a0, type: 2}
+  - Details: {fileID: 11400000, guid: 4bcec155db7f6dc49a39d529bb98ba3d, type: 2}
+  - Details: {fileID: 11400000, guid: a65243c70c27c454698503a9a0659ad3, type: 2}
+  - Details: {fileID: 11400000, guid: 615219157bd293d43849f13382a111a0, type: 2}
+  - Details: {fileID: 11400000, guid: 4bcec155db7f6dc49a39d529bb98ba3d, type: 2}
+  - Details: {fileID: 11400000, guid: 4bcec155db7f6dc49a39d529bb98ba3d, type: 2}
   InventoryDimensions:
     Height: 6
     Width: 9
