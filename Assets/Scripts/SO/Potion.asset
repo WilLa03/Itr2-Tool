@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Potion
   m_EditorClassIdentifier: 
   ID: 11c96b07-4b95-4b4c-9f1f-2e92b1ab78ae
+  AssetName: 
   Rarity: 3
-  FriendlyName: The Potion the great great great great great grandfather
-  Description: ITs just a potion
+  FriendlyName: Potion
+  Description: The Potion the great great great great great grandfather
   SellPrice: 999
   SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

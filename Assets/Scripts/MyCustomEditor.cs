@@ -27,6 +27,7 @@ public class MyCustomEditor : EditorWindow
     private string lastname;
     private List<ItemDefinition> allItems;
     private Sorting sortingtype = Sorting.Alphabet;
+    [SerializeField] private Sprite defaultSprite;
 
     [MenuItem("Window/ItemManager")]
     public static void ShowMyEditor()
@@ -43,6 +44,9 @@ public class MyCustomEditor : EditorWindow
     private void OnEnable()
     {
         lastname = null;
+        var defaultsprites = AssetDatabase.FindAssets("defaultsprite");
+
+        defaultSprite = AssetDatabase.LoadAssetAtPath<Sprite>(AssetDatabase.GUIDToAssetPath(defaultsprites[0]));
     }
 
     
@@ -91,7 +95,7 @@ public class MyCustomEditor : EditorWindow
       leftList.hierarchy.Add(button);
       
       
-      button.clicked += ButtonOnClicked;
+      button.clicked += OnCreateClicked;
 
       
       //TODO: Make it so that it doesnt break on hotload
@@ -116,24 +120,34 @@ public class MyCustomEditor : EditorWindow
       leftList.selectionChanged += (items) => { m_SelectedIndex = leftList.selectedIndex; };
   }
 
-    private void ButtonOnClicked()
+    private void OnCreateClicked()
     {
         m_RightPane.Clear();
 
-        var Save = new Button();
-        Save.text = "Save";
+        var Create = new Button();
+        Create.text = "Create";
+        Create.style.marginTop = 30;
+        Create.style.alignSelf =  Align.Center;
+        Create.style.maxWidth = 400;
+        Create.style.minWidth = 400;
+        Create.style.maxHeight = 20;
+        Create.style.minHeight = 20;
+        Create.style.flexGrow = 1;
         
         
-        var name = new TextField();
+        var name = new TextField("Name of asset");
         name.RegisterValueChangedCallback(evt =>
         {
             newname = name.value;
         });
+        name.style.alignSelf = Align.Stretch;
+        name.style.marginTop = 10;
         
         
-        Save.clicked += CreateItem;
+        
+        Create.clicked += CreateItem;
         m_RightPane.Add(name);
-        m_RightPane.Add(Save);
+        m_RightPane.Add(Create);
 
 
         
@@ -167,14 +181,14 @@ public class MyCustomEditor : EditorWindow
               Aname.RegisterValueChangedCallback(evt =>
               {
                   newAssetName = Aname.value;
+                  Debug.Log(Aname.maxLength);
               });
               Aname.value = sc.name;
               Aname.style.alignSelf = Align.Stretch;
               Aname.style.marginTop = 10;
               
-              var name = new TextField("Name of item")
-              {
-              };
+              var name = new TextField("Name of item");
+              name.maxLength = 20;
               name.RegisterValueChangedCallback(evt =>
               {
                   sc.FriendlyName = name.value;
@@ -276,7 +290,7 @@ public class MyCustomEditor : EditorWindow
               m_RightPane.Add(sellprice);
               m_RightPane.Add(dimensions);
               m_RightPane.Add(icon);
-              m_RightPane.Add(Save);
+              //m_RightPane.Add(Save);
               m_RightPane.Add(Delete);
 
               Save.clicked += SaveItem;
@@ -310,12 +324,22 @@ public class MyCustomEditor : EditorWindow
 
     private void CreateItem()
     {
-        //TODO: Check the name of every SO
-        //TODO: Fix visualization 
-        if (newname != null && newname != lastname)
+        if (newname != null)
         {
+            foreach (var it  in allItems)
+            {
+                if (string.Equals(newname, it.name, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Debug.Log("Name already exists");
+                    return;
+                }
+            }
+            
             ItemDefinition item = ScriptableObject.CreateInstance<ItemDefinition>();
             AssetDatabase.CreateAsset(item, $"Assets/Scripts/SO/{newname}.asset");
+            item.FriendlyName = newname;
+            item.SellPrice = 1;
+            item.Icon = defaultSprite;
             MakeUI();
             lastname = newname;
 
@@ -334,7 +358,9 @@ public class MyCustomEditor : EditorWindow
                     }
                 }
             }
+            
         }
+        
     }
 
     private void MakeUI()

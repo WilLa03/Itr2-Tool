@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: David's Coola Item
+  m_Name: Barrel
   m_EditorClassIdentifier: 
-  ID: bb1f6616-3ac5-4763-b3eb-986b0e2905d7
+  ID: 525a2d39-d446-4e92-a5d5-9e46480d46ef
   AssetName: 
-  Rarity: 4
-  FriendlyName: David's Coola Item
+  Rarity: 0
+  FriendlyName: 
   Description: 
-  SellPrice: 1
-  SlotDimension: {x: 2, y: 2}
-  Icon: {fileID: 21300000, guid: 50bf2eae0d781ed4392168f6419f8d95, type: 3}
+  SellPrice: 0
+  SlotDimension: {x: 1, y: 1}
+  Icon: {fileID: 0}

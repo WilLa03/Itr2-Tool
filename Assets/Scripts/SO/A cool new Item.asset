@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: A cool new Item
   m_EditorClassIdentifier: 
   ID: bfe894c9-2d2b-4f5a-b9a5-3a2af912f556
+  AssetName: 
   Rarity: 4
-  FriendlyName: An Item made by the great great great great great great great great
-    grandfather Mike
-  Description: its an item, just an item
+  FriendlyName: 'An Item '
+  Description: It's an item made by the great great great great great great great
+    great grandfather Mike
   SellPrice: 1
   SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 21300000, guid: 52b9900dc7f1bef4c861c91c3b71139b, type: 3}

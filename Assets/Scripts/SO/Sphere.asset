@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 516ac0969b5b57941a8df6be6ec658e0, type: 3}
-  m_Name: Hand
+  m_Name: Sphere
   m_EditorClassIdentifier: 
-  ID: 349b2a5a-d6e0-416d-88c5-f928f3589711
+  ID: 9233ead1-4596-41f2-bbab-402fbaaffe19
+  AssetName: 
   Rarity: 0
-  FriendlyName: 
+  FriendlyName: Rought Sphere
   Description: 
   SellPrice: 0
   SlotDimension: {x: 1, y: 1}
-  Icon: {fileID: 0}
+  Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
