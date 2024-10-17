@@ -17,6 +17,6 @@ MonoBehaviour:
   Rarity: 1
   FriendlyName: Ham
   Description: Ham from a small pig
-  SellPrice: 424
+  SellPrice: 3
   SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}

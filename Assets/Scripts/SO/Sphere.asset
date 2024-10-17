@@ -16,7 +16,7 @@ MonoBehaviour:
   AssetName: 
   Rarity: 0
   FriendlyName: Sphere
-  Description: Test
-  SellPrice: 60
+  Description: Testing to change value
+  SellPrice: 63
   SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

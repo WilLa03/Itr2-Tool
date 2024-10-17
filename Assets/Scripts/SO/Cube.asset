@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Cube
   m_EditorClassIdentifier: 
   ID: 4fa177ba-c935-4bd5-9022-9a723c822f70
+  AssetName: 
   Rarity: 3
   FriendlyName: Cubert
   Description: A square cube
