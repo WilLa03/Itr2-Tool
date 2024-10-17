@@ -55,7 +55,8 @@ public sealed class PlayerInventory : MonoBehaviour
     private void Start()
     {
         LoadInventory();
-        
+        GetComponentInChildren<UIDocument>().enabled = false;
+
     }
 
     private void OnDestroy()

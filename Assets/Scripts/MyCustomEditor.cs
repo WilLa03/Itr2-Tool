@@ -262,6 +262,23 @@ public class MyCustomEditor : EditorWindow
               dimensions.style.alignSelf = Align.Stretch;
               
               
+              
+              VisualElement iconPre = new VisualElement
+              {
+                  style =
+                  {
+                      backgroundImage = sc.Icon.texture,
+                      height = sc.SlotDimension.y * PlayerInventory.SlotDimension.Height,
+                      width = sc.SlotDimension.x * PlayerInventory.SlotDimension.Width,
+                      visibility = Visibility.Hidden
+                  },
+                  name = "Icon"
+              };
+              
+              
+              
+              
+              
               var Save = new Button();
               Save.text = "Save";
               Save.style.marginTop = 30;
@@ -291,6 +308,7 @@ public class MyCustomEditor : EditorWindow
               m_RightPane.Add(dimensions);
               m_RightPane.Add(icon);
               //m_RightPane.Add(Save);
+              m_RightPane.Add(iconPre);
               m_RightPane.Add(Delete);
 
               Save.clicked += SaveItem;
