@@ -80,6 +80,7 @@ public class MyCustomEditor : EditorWindow
       
       leftList = new ListView();
       SortDrop = new EnumField(Sorting.Alphabet);
+      SortDrop.style.marginBottom = 5;
       leftPane.Add(SortDrop);
       leftPane.Add(leftList);
       splitView.Add(leftPane);
@@ -182,6 +183,7 @@ public class MyCustomEditor : EditorWindow
               {
                   newAssetName = Aname.value;
                   Debug.Log(Aname.maxLength);
+                  
               });
               Aname.value = sc.name;
               Aname.style.alignSelf = Align.Stretch;
@@ -239,6 +241,19 @@ public class MyCustomEditor : EditorWindow
               icon.value = sc.Icon;
               icon.style.alignSelf = Align.Stretch;
               
+              
+              
+              var iconPre = new UnityEngine.UIElements.Image();
+              iconPre.sprite = sc.Icon;
+              iconPre.style.height = sc.SlotDimension.y * 50;
+              iconPre.style.width = sc.SlotDimension.x * 50;
+              iconPre.style.alignSelf = Align.Center;
+              iconPre.style.marginBottom = 20;
+              iconPre.style.marginTop = 20;
+              iconPre.style.backgroundColor = new StyleColor(new Color(0,0,0,0.2f));
+              iconPre.scaleMode = ScaleMode.ScaleToFit;
+              
+              
               var dimensions = new Vector2IntField("Dimensions for item");
               dimensions.RegisterValueChangedCallback(evt =>
               {
@@ -250,10 +265,20 @@ public class MyCustomEditor : EditorWindow
                   {
                       dimensions.value = new Vector2Int(dimensions.value.x,1);
                   }
+                  else if(dimensions.value.x > 9)
+                  {
+                      dimensions.value = new Vector2Int(9,dimensions.value.y);
+                  }
+                  else if(dimensions.value.y > 6)
+                  {
+                      dimensions.value = new Vector2Int(dimensions.value.x,6);
+                  }
                   else
                   {
                       sc.SlotDimension.x = dimensions.value.x;
                       sc.SlotDimension.y = dimensions.value.y;
+                      iconPre.style.height = sc.SlotDimension.y * 50;
+                      iconPre.style.width = sc.SlotDimension.x * 50;
                       EditorUtility.SetDirty(sc);
                   }
                   
@@ -261,22 +286,8 @@ public class MyCustomEditor : EditorWindow
               dimensions.value = new Vector2Int(sc.SlotDimension.x, sc.SlotDimension.y);
               dimensions.style.alignSelf = Align.Stretch;
 
-
-
-              /*var iconPre = new UnityEngine.UIElements.Image()
-              {
-                  style =
-                  {
-                  backgroundImage = sc.Icon.texture,
-                  height = sc.SlotDimension.y * PlayerInventory.SlotDimension.Height,
-                  width = sc.SlotDimension.x * PlayerInventory.SlotDimension.Width,
-                  visibility = Visibility.Hidden
-              }};
-              iconPre.name = "Icen";
-              Debug.Log(iconPre.style.backgroundImage);*/
-
-              var iconPre = new UnityEngine.UIElements.Image();
-              iconPre.sprite = sc.Icon; 
+              
+             
               
               
               
@@ -318,7 +329,6 @@ public class MyCustomEditor : EditorWindow
               Save.clicked += SaveItem;
               Delete.clicked += DeleteItem;
               leftList.RefreshItems();
-              
           }
       }
   }

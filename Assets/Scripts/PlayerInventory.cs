@@ -6,6 +6,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 
@@ -37,7 +38,12 @@ public sealed class PlayerInventory : MonoBehaviour
     private Button m_ButtonEquip;
 
     private static string currentItemID;
-    
+
+    private UIDocument _uiDocument;
+
+    [SerializeField] public UnityEvent _event;
+
+    private ItemVisual _itemVisual; 
     public static Dimensions SlotDimension { get; private set; }
 
     private void Awake()
@@ -45,7 +51,8 @@ public sealed class PlayerInventory : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            Configure();
+            _uiDocument = GetComponentInChildren<UIDocument>();
+            //Configure();
         }
         else if (Instance != this)
         {
@@ -54,23 +61,30 @@ public sealed class PlayerInventory : MonoBehaviour
     }
     private void Start()
     {
-        LoadInventory();
-        GetComponentInChildren<UIDocument>().enabled = false;
-
+        
+        //LoadInventory();
+        
     }
 
     private void OnDestroy()
     {
-        m_ButtonDrop.clickable.clicked -= OnDropClicked;
-        m_ButtonEquip.clickable.clicked -= OnEquipClicked;
+        if(m_ButtonDrop!= null)
+            m_ButtonDrop.clickable.clicked -= OnDropClicked;
+        if(m_ButtonEquip!= null)
+            m_ButtonEquip.clickable.clicked -= OnEquipClicked;
     }
 
     private async void Configure()
     {
-        m_Root = GetComponentInChildren<UIDocument>().rootVisualElement;
-        
+        m_Root = _uiDocument.rootVisualElement;
         m_InventoryGrid = m_Root.Q<VisualElement>("Grid");
-        
+        foreach (var child in m_InventoryGrid.Children())
+        {
+            if (child.name != "SlotIcon")
+            {
+                m_InventoryGrid.Remove(child);
+            }
+        }
         VisualElement itemDetails = m_Root.Q<VisualElement>("ItemDetails");
 
         m_ItemDetailHeader = itemDetails.Q<Label>("ItemName");
@@ -85,7 +99,6 @@ public sealed class PlayerInventory : MonoBehaviour
         await UniTask.WaitForEndOfFrame();
 
         ConfigureSlotDimensions();
-
         m_IsInventoryReady = true;
     }
     
@@ -106,7 +119,6 @@ public sealed class PlayerInventory : MonoBehaviour
     private void ConfigureSlotDimensions()
     {
         VisualElement firstSlot = m_InventoryGrid.Children().First();
-
         SlotDimension = new Dimensions
         {
             Width = Mathf.RoundToInt(firstSlot.worldBound.width),
@@ -114,35 +126,44 @@ public sealed class PlayerInventory : MonoBehaviour
         };
     }
     
-    private void AddItemToInventoryGrid(VisualElement item) => m_InventoryGrid.Add(item);
-    private void RemoveItemFromInventoryGrid(VisualElement item) => m_InventoryGrid.Remove(item);
-    
+    private void AddItemToInventoryGrid(VisualElement item)
+    {
+        m_InventoryGrid.Add(item);
+    }
+
+    private void RemoveItemFromInventoryGrid(VisualElement item)
+    {
+        m_InventoryGrid.Remove(item);
+    }
+
     private async void LoadInventory()
     {
         //make sure inventory is in ready state
         await UniTask.WaitUntil(() => m_IsInventoryReady);
-
         //load
+
         foreach (StoredItem loadedItem in StoredItems)
         {
+            
+            
             loadedItem.ID = Guid.NewGuid().ToString();
-            ItemVisual inventoryItemVisual = new ItemVisual(loadedItem.Details, loadedItem.ID);
+            _itemVisual = new ItemVisual(loadedItem.Details, loadedItem.ID);
 
-            AddItemToInventoryGrid(inventoryItemVisual);
+            AddItemToInventoryGrid(_itemVisual);
+         
             
 
-            bool inventoryHasSpace = await GetPositionForItem(inventoryItemVisual);
+            bool inventoryHasSpace = await GetPositionForItem(_itemVisual);
             if (!inventoryHasSpace)
             {
                 Debug.Log("No space - Cannot pick up the item");
-                RemoveItemFromInventoryGrid(inventoryItemVisual);
+                RemoveItemFromInventoryGrid(_itemVisual);
                 continue;
             }
-
-            ConfigureInventoryItem(loadedItem, inventoryItemVisual);
+            ConfigureInventoryItem(loadedItem, _itemVisual);
         }
+        Debug.Log(m_InventoryGrid.childCount);
     }
-    
     
     
     private static void ConfigureInventoryItem(StoredItem item, ItemVisual visual)
@@ -242,6 +263,20 @@ public sealed class PlayerInventory : MonoBehaviour
     private void OnEquipClicked()
     {
         Debug.Log($"equip is not implemented right now");
+    }
+
+    public void UIEnabled()
+    {
+        _uiDocument.enabled = true;
+        Configure();
+        Debug.Log("enable");
+        
+        LoadInventory();
+    }
+    public void UIDisabled()
+    {
+        _uiDocument.enabled = false;
+        Debug.Log("disabled");
     }
     
 }

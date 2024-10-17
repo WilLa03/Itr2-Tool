@@ -15,8 +15,8 @@ MonoBehaviour:
   ID: 9233ead1-4596-41f2-bbab-402fbaaffe19
   AssetName: 
   Rarity: 0
-  FriendlyName: Rought Sphere
-  Description: 
-  SellPrice: 0
+  FriendlyName: Sphere
+  Description: Test
+  SellPrice: 60
   SlotDimension: {x: 1, y: 1}
   Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}

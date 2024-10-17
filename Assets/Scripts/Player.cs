@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public float speed;
 
     public Rigidbody rb;
+    private bool enabled = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,5 +34,18 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value) //call move in the created player
     {
         moveDir = value.Get<Vector2>().normalized;
+    }
+    void OnInventory(InputValue value) //call move in the created player
+    {
+        if (!enabled)
+        {
+            PlayerInventory.Instance.UIEnabled();
+            enabled = true;
+        }
+        else
+        {
+            PlayerInventory.Instance.UIDisabled();
+            enabled = false;
+        }
     }
 }
