@@ -260,20 +260,24 @@ public class MyCustomEditor : EditorWindow
               });
               dimensions.value = new Vector2Int(sc.SlotDimension.x, sc.SlotDimension.y);
               dimensions.style.alignSelf = Align.Stretch;
-              
-              
-              
-              VisualElement iconPre = new VisualElement
+
+
+
+              /*var iconPre = new UnityEngine.UIElements.Image()
               {
                   style =
                   {
-                      backgroundImage = sc.Icon.texture,
-                      height = sc.SlotDimension.y * PlayerInventory.SlotDimension.Height,
-                      width = sc.SlotDimension.x * PlayerInventory.SlotDimension.Width,
-                      visibility = Visibility.Hidden
-                  },
-                  name = "Icon"
-              };
+                  backgroundImage = sc.Icon.texture,
+                  height = sc.SlotDimension.y * PlayerInventory.SlotDimension.Height,
+                  width = sc.SlotDimension.x * PlayerInventory.SlotDimension.Width,
+                  visibility = Visibility.Hidden
+              }};
+              iconPre.name = "Icen";
+              Debug.Log(iconPre.style.backgroundImage);*/
+
+              var iconPre = new UnityEngine.UIElements.Image();
+              iconPre.sprite = sc.Icon; 
+              
               
               
               
