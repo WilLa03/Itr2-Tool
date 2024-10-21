@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 [CreateAssetMenu(fileName ="New Item", menuName ="Data/Item")]
 public class ItemDefinition : ScriptableObject
 {
-    public string ID = Guid.NewGuid().ToString();
+    [HideInInspector]public string ID = Guid.NewGuid().ToString();
     [HideInInspector]public string AssetName;
     public Rarity Rarity;
-    public string FriendlyName;
+    public string ItemName;
     public string Description;
     public int SellPrice;
     public Vector2Int SlotDimension = new Vector2Int(1,1);

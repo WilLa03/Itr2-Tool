@@ -27,7 +27,7 @@ public class ItemVisual : VisualElement
         icon.AddToClassList("visual-icon");
         AddToClassList("visual-icon-container");
         
-        name = $"{m_Item.FriendlyName}";
+        name = $"{m_Item.ItemName}";
         style.height = m_Item.SlotDimension.y * 
                        PlayerInventory.SlotDimension.Height;
         style.width = m_Item.SlotDimension.x * 

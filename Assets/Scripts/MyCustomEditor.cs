@@ -201,10 +201,10 @@ public class MyCustomEditor : EditorWindow
             name.RegisterValueChangedCallback(evt =>
             {
                 Undo.RecordObject(sc, "Change Item Name");
-                sc.FriendlyName = name.value;
+                sc.ItemName = name.value;
                 EditorUtility.SetDirty(sc);
             });
-            name.value = sc.FriendlyName;
+            name.value = sc.ItemName;
             name.style.alignSelf = Align.Stretch;
             name.style.marginTop = 10;
 
@@ -340,7 +340,7 @@ public class MyCustomEditor : EditorWindow
        Aname.value = currentSc.name;
 
        var name = m_RightPane[1] as TextField;
-       name.value = currentSc.FriendlyName;
+       name.value = currentSc.ItemName;
 
        var rarity = m_RightPane[2] as EnumField;
        rarity.value = currentSc.Rarity;
@@ -400,7 +400,7 @@ public class MyCustomEditor : EditorWindow
             
             ItemDefinition item = ScriptableObject.CreateInstance<ItemDefinition>();
             AssetDatabase.CreateAsset(item, $"Assets/Scripts/SO/{newname}.asset");
-            item.FriendlyName = newname;
+            item.ItemName = newname;
             item.SellPrice = 1;
             item.Icon = defaultSprite;
             MakeUI();

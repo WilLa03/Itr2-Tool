@@ -52,7 +52,7 @@ public sealed class PlayerInventory : MonoBehaviour
         {
             Instance = this;
             _uiDocument = GetComponentInChildren<UIDocument>();
-            //Configure();
+            Configure();
         }
         else if (Instance != this)
         {
@@ -62,7 +62,7 @@ public sealed class PlayerInventory : MonoBehaviour
     private void Start()
     {
         
-        //LoadInventory();
+        LoadInventory();
         
     }
 
@@ -176,7 +176,7 @@ public sealed class PlayerInventory : MonoBehaviour
     {
         
         currentItemID = ID;
-        m_ItemDetailHeader.text = item.FriendlyName;
+        m_ItemDetailHeader.text = item.ItemName;
         m_ItemDetailBody.text = item.Description;
         m_ItemDetailPrice.text = item.SellPrice.ToString();
     }
@@ -267,16 +267,16 @@ public sealed class PlayerInventory : MonoBehaviour
 
     public void UIEnabled()
     {
-        _uiDocument.enabled = true;
+        /*_uiDocument.enabled = true;
         Configure();
         Debug.Log("enable");
         
-        LoadInventory();
+        LoadInventory();*/
     }
     public void UIDisabled()
     {
-        _uiDocument.enabled = false;
-        Debug.Log("disabled");
+        /*_uiDocument.enabled = false;
+        Debug.Log("disabled");*/
     }
     
 }
