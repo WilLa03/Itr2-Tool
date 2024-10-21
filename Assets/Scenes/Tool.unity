@@ -260,7 +260,7 @@ MonoBehaviour:
   - ID: 
     Details: {fileID: 11400000, guid: a65243c70c27c454698503a9a0659ad3, type: 2}
   - ID: 
-    Details: {fileID: 11400000, guid: 3d7f95cd8f35c3c4e857d2b7dbfa764e, type: 2}
+    Details: {fileID: 11400000, guid: 8f983624f576b794eb3e44b96acefc9f, type: 2}
   - ID: 
     Details: {fileID: 11400000, guid: 27095e348434b7b4ebfc2019c9dc48af, type: 2}
   InventoryDimensions:
